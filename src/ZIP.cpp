@@ -158,6 +158,8 @@ namespace Zip
             return stream << "LZMA";
         case FileCompressionMethod::Ppmd:
             return stream << "PPmD";
+        case FileCompressionMethod::Aes256:
+            return stream; // See FileCompressionMethod notes
         }
 
         return stream << "Unknown " << '(' << uint32_t(method) << ')';

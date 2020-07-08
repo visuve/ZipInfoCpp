@@ -6,5 +6,8 @@
 
 ## Prerequisites
 
-- Visual Studio 2017 with latest updates
+- CMake >= 3.8
+- GCC >= 8.3
+    - or
+- Visual Studio 2019 with latest updates
   - https://www.visualstudio.com/

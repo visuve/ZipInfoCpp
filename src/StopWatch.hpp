@@ -6,9 +6,7 @@
 
 namespace
 {
-    using NanoSeconds = std::chrono::nanoseconds;
-    using MicroSeconds = std::chrono::microseconds;
-    using MilliSeconds = std::chrono::milliseconds;
+    using MilliSeconds = std::chrono::duration<uint64_t, std::ratio<1, 1000>>;
 
     template <typename T>
     class StopWatch
@@ -40,16 +38,7 @@ namespace
         const std::string m_unit;
     };
 
-    StopWatch<NanoSeconds>::StopWatch() :
-        m_unit("ns")
-    {
-    }
-
-    StopWatch<MicroSeconds>::StopWatch() :
-        m_unit("us")
-    {
-    }
-
+    template<>
     StopWatch<MilliSeconds>::StopWatch() :
         m_unit("ms")
     {
