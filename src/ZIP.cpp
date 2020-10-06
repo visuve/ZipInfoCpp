@@ -8,7 +8,7 @@ namespace Zip
     {
         IO::Extract(stream, header.Version);
         IO::Extract(stream, header.Flags);
-        IO::Extract(stream, header.CompressionMethod);
+        IO::Extract<uint16_t>(stream, reinterpret_cast<uint16_t&>(header.CompressionMethod));
         IO::Extract(stream, header.LastModifiedTime);
         IO::Extract(stream, header.LastModifiedDate);
         IO::Extract(stream, header.Crc32);
@@ -106,9 +106,9 @@ namespace Zip
             {
             case Zip::ArchiveMarkers::LocalFileHeader:
             {
-                auto iter = archive.LocalFileHeaders.emplace(archive.LocalFileHeaders.end(), LocalFileHeader());
-                stream >> *iter;
-                stream.seekg(iter->CompressedSize, std::ios_base::cur); // Skip the compressed data
+                LocalFileHeader& header = archive.LocalFileHeaders.emplace_back();
+                stream >> header;
+                stream.seekg(header.CompressedSize, std::ios_base::cur); // Skip the compressed data
                 continue;
             }
             case Zip::ArchiveMarkers::DataDescriptor:
@@ -119,8 +119,7 @@ namespace Zip
             }
             case Zip::ArchiveMarkers::CentralDirectoryFileHeader:
             {
-                auto iter = archive.CentralDirectoryHeaders.emplace(archive.CentralDirectoryHeaders.end(), CentralDirectoryHeader());
-                stream >> *iter;
+                stream >> archive.CentralDirectoryHeaders.emplace_back();
                 continue;
             }
             case Zip::ArchiveMarkers::EndOfCentralDirectoryRecord:

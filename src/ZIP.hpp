@@ -34,7 +34,7 @@ namespace Zip
     {
         uint16_t Version = 0; // Version needed to extract (minimum)
         std::bitset<16> Flags; // General purpose bit flag
-        uint16_t CompressionMethod = 0; // Compression method
+        FileCompressionMethod CompressionMethod = FileCompressionMethod::Store; // Compression method
         uint16_t LastModifiedTime = 0; // File last modification time
         uint16_t LastModifiedDate = 0; // File last modification date
         uint32_t Crc32 = 0; // CRC-32

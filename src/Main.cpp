@@ -15,11 +15,11 @@ namespace
             const float ratio = float(fileHeader.UncompressedSize) / float(fileHeader.CompressedSize);
 
             const bool encrypted = fileHeader.Flags.test(0);
-            const bool aes256 = fileHeader.CompressionMethod == uint16_t(Zip::FileCompressionMethod::Aes256);
+            const bool aes256 = fileHeader.CompressionMethod == Zip::FileCompressionMethod::Aes256;
             const auto encryption = encrypted && aes256 ? "AES-256" : encrypted ? "yes" : "no";
             const auto method = aes256 && fileHeader.ExtraField.size() > 9 ?
                 static_cast<Zip::FileCompressionMethod>(fileHeader.ExtraField[9]) :
-                static_cast<Zip::FileCompressionMethod>(fileHeader.CompressionMethod);
+                fileHeader.CompressionMethod;
 
             IO::FmtGuard fmtg;
             std::cout
