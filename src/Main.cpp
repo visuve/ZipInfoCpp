@@ -14,7 +14,7 @@ namespace
         {
             const float ratio = float(fileHeader.UncompressedSize) / float(fileHeader.CompressedSize);
 
-            const bool encrypted = fileHeader.Flags & 1;
+            const bool encrypted = fileHeader.Flags.test(0);
             const bool aes256 = fileHeader.CompressionMethod == uint16_t(Zip::FileCompressionMethod::Aes256);
             const auto encryption = encrypted && aes256 ? "AES-256" : encrypted ? "yes" : "no";
             const auto method = aes256 && fileHeader.ExtraField.size() > 9 ?
@@ -40,7 +40,7 @@ namespace
             std::cout
                 << "Central directory header:"
                 << "\nRatio: " << int(ratio * 100) - 100 << '%'
-                << "\nEncrypted: " << ((centralDirectoryHeader.Flags & 1) ? "yes" : "no")
+                << "\nEncrypted: " << (centralDirectoryHeader.Flags.test(0) ? "yes" : "no")
                 << "\nCRC-32: 0x" << std::hex << std::setfill('0') << std::setw(8) << std::uppercase << centralDirectoryHeader.Crc32
                 << '\n' << std::endl;
         }

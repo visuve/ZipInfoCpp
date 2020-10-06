@@ -1,8 +1,5 @@
 #pragma once
 
-#include <iostream>
-#include <istream>
-
 namespace IO
 {
     // Extract by reference
@@ -19,6 +16,13 @@ namespace IO
     inline void Extract(std::istream& stream, uint32_t& value)
     {
         stream.read(reinterpret_cast<char*>(&value), 4);
+    }
+
+    template <size_t N>
+    inline void Extract(std::istream& stream, std::bitset<N>& value)
+    {
+        static_assert(N % 8 == 0);
+        stream.read(reinterpret_cast<char*>(&value), N / 8);
     }
 
     // Extract by copy
@@ -38,6 +42,15 @@ namespace IO
     {
         uint32_t value = 0;
         Extract(stream, value);
+        return value;
+    }
+
+    template <size_t N>
+    inline std::bitset<N> Extract(std::istream& stream)
+    {
+        static_assert(N % 8 == 0);
+        std::bitset<N> value;
+        Extract<N>(stream, value);
         return value;
     }
 

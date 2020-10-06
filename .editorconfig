@@ -7,5 +7,5 @@ charset = utf-8
 end_of_line = crlf
 
 # C/C++
-[*.{c,cpp,cxx,h,hpp,hxx,ipp}]
+[*.{c,cpp,cxx,h,hpp,hxx,ipp,txt}]
 indent_style = space

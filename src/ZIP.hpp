@@ -1,10 +1,5 @@
 #pragma once
 
-#include <cstdint>
-#include <string>
-#include <vector>
-#include <istream>
-
 namespace Zip
 {
     // See following links for more details:
@@ -38,7 +33,7 @@ namespace Zip
     struct LocalFileHeader
     {
         uint16_t Version = 0; // Version needed to extract (minimum)
-        uint16_t Flags = 0; // General purpose bit flag
+        std::bitset<16> Flags; // General purpose bit flag
         uint16_t CompressionMethod = 0; // Compression method
         uint16_t LastModifiedTime = 0; // File last modification time
         uint16_t LastModifiedDate = 0; // File last modification date
@@ -56,7 +51,7 @@ namespace Zip
     {
         uint16_t Version = 0; // Version made by
         uint16_t VersionRequired = 0; // Version needed to extract (minimum)
-        uint16_t Flags = 0; // General purpose bit flag
+        std::bitset<16> Flags; // General purpose bit flag
         uint16_t CompressionMethod = 0; // Compression method
         uint16_t LastModifiedTime = 0; //  	File last modification time
         uint16_t LastModifiedDate = 0; // File last modification date
