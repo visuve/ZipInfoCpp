@@ -4,7 +4,6 @@ namespace Zip
 {
     // See following links for more details:
     // https://en.wikipedia.org/wiki/Zip_(file_format)
-    // https://upload.wikimedia.org/wikipedia/commons/6/63/ZIP-64_Internal_Layout.svg
     // https://users.cs.jmu.edu/buchhofp/forensics/formats/pkzip.html
 
      // Markers to divide sections in a ZIP archive

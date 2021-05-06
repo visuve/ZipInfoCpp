@@ -7,6 +7,24 @@ namespace IO
     void Extract(std::istream& stream, Value& value) = delete;
 
     template <>
+    inline void Extract(std::istream& stream, int16_t& value)
+    {
+        stream.read(reinterpret_cast<char*>(&value), 2);
+    }
+
+    template <>
+    inline void Extract(std::istream& stream, int32_t& value)
+    {
+        stream.read(reinterpret_cast<char*>(&value), 4);
+    }
+
+    template <>
+    inline void Extract(std::istream& stream, int64_t& value)
+    {
+        stream.read(reinterpret_cast<char*>(&value), 8);
+    }
+
+    template <>
     inline void Extract(std::istream& stream, uint16_t& value)
     {
         stream.read(reinterpret_cast<char*>(&value), 2);
@@ -16,6 +34,12 @@ namespace IO
     inline void Extract(std::istream& stream, uint32_t& value)
     {
         stream.read(reinterpret_cast<char*>(&value), 4);
+    }
+
+    template <>
+    inline void Extract(std::istream& stream, uint64_t& value)
+    {
+        stream.read(reinterpret_cast<char*>(&value), 8);
     }
 
     template <size_t N>
@@ -28,6 +52,30 @@ namespace IO
     // Extract by copy
     template <typename Value>
     Value Extract(std::istream& stream) = delete;
+
+    template <>
+    inline int16_t Extract(std::istream& stream)
+    {
+        int16_t value = 0;
+        Extract(stream, value);
+        return value;
+    }
+
+    template <>
+    inline int32_t Extract(std::istream& stream)
+    {
+        int32_t value = 0;
+        Extract(stream, value);
+        return value;
+    }
+
+    template <>
+    inline int64_t Extract(std::istream& stream)
+    {
+        int64_t value = 0;
+        Extract(stream, value);
+        return value;
+    }
 
     template <>
     inline uint16_t Extract(std::istream& stream)
@@ -45,6 +93,14 @@ namespace IO
         return value;
     }
 
+    template <>
+    inline uint64_t Extract(std::istream& stream)
+    {
+        uint64_t value = 0;
+        Extract(stream, value);
+        return value;
+    }
+
     template <size_t N>
     inline std::bitset<N> Extract(std::istream& stream)
     {
@@ -53,22 +109,4 @@ namespace IO
         Extract<N>(stream, value);
         return value;
     }
-
-    class FmtGuard
-    {
-    public:
-        FmtGuard() :
-            m_state(nullptr)
-        {
-            m_state.copyfmt(std::cout);
-        }
-
-        ~FmtGuard()
-        {
-            std::cout.copyfmt(m_state);
-        }
-
-    private:
-        std::ios m_state;
-    };
 }

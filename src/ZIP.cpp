@@ -104,37 +104,37 @@ namespace Zip
 
             switch (static_cast<ArchiveMarkers>(id))
             {
-            case Zip::ArchiveMarkers::LocalFileHeader:
-            {
-                LocalFileHeader& header = archive.LocalFileHeaders.emplace_back();
-                stream >> header;
-                stream.seekg(header.CompressedSize, std::ios_base::cur); // Skip the compressed data
-                continue;
-            }
-            case Zip::ArchiveMarkers::DataDescriptor:
-            {
-                // TODO: offset might be 8!
-                stream.seekg(12, std::ios_base::cur);
-                continue;
-            }
-            case Zip::ArchiveMarkers::CentralDirectoryFileHeader:
-            {
-                stream >> archive.CentralDirectoryHeaders.emplace_back();
-                continue;
-            }
-            case Zip::ArchiveMarkers::EndOfCentralDirectoryRecord:
-            {
-                stream >> archive.CentralDirectoryEnd;
-                complete = true;
-                break;
-            }
-            case Zip::ArchiveMarkers::TemporarySpanning:
-            {
-                // TODO: find out more about this
-                continue;
-            }
-            default:
-                throw std::logic_error("Read unknown marker: " + std::to_string(id));
+                case Zip::ArchiveMarkers::LocalFileHeader:
+                {
+                    LocalFileHeader& header = archive.LocalFileHeaders.emplace_back();
+                    stream >> header;
+                    stream.seekg(header.CompressedSize, std::ios_base::cur); // Skip the compressed data
+                    continue;
+                }
+                case Zip::ArchiveMarkers::DataDescriptor:
+                {
+                    // TODO: offset might be 8!
+                    stream.seekg(12, std::ios_base::cur);
+                    continue;
+                }
+                case Zip::ArchiveMarkers::CentralDirectoryFileHeader:
+                {
+                    stream >> archive.CentralDirectoryHeaders.emplace_back();
+                    continue;
+                }
+                case Zip::ArchiveMarkers::EndOfCentralDirectoryRecord:
+                {
+                    stream >> archive.CentralDirectoryEnd;
+                    complete = true;
+                    break;
+                }
+                case Zip::ArchiveMarkers::TemporarySpanning:
+                {
+                    // TODO: find out more about this
+                    continue;
+                }
+                // default:
+                    // throw std::logic_error("Read unknown marker: " + std::to_string(id));
             }
         }
 

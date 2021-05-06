@@ -5,6 +5,24 @@
 
 namespace
 {
+    class FmtGuard
+    {
+    public:
+        FmtGuard() :
+            _state(nullptr)
+        {
+            _state.copyfmt(std::cout);
+        }
+
+        ~FmtGuard()
+        {
+            std::cout.copyfmt(_state);
+        }
+
+    private:
+        std::ios _state;
+    };
+
     bool PrintZipArchiveInfo(std::istream& file)
     {
         Zip::Archive archive;
@@ -21,7 +39,7 @@ namespace
                 static_cast<Zip::FileCompressionMethod>(fileHeader.ExtraField[9]) :
                 fileHeader.CompressionMethod;
 
-            IO::FmtGuard fmtg;
+            FmtGuard fmtg;
             std::cout
                 << "File header: "
                 << "\nName:" << fileHeader.FileName
@@ -36,7 +54,7 @@ namespace
         {
             const float ratio = float(centralDirectoryHeader.UncompressedSize) / float(centralDirectoryHeader.CompressedSize);
 
-            IO::FmtGuard fmtg;
+            FmtGuard fmtg;
             std::cout
                 << "Central directory header:"
                 << "\nRatio: " << int(ratio * 100) - 100 << '%'
@@ -67,16 +85,16 @@ int main(int argc, char* argv[])
     {
         for (int i = 1; i < argc; ++i)
         {
-            const std::string filePath(argv[i]);
-            std::ifstream file(filePath, std::ios_base::binary);
+            const std::filesystem::path path(argv[i]);
+            std::ifstream file(path, std::ios_base::binary);
 
             if (!file)
             {
-                std::cerr << "Failed to open: " << '"' << filePath << '"' << std::endl;
+                std::cerr << "Failed to open: " << '"' << path << '"' << std::endl;
                 return EIO;
             }
 
-            std::cout << filePath << ":\n" << std::endl;
+            std::cout << path << ":\n" << std::endl;
             file.exceptions(std::istream::failbit | std::istream::badbit);
 
             StopWatch<MilliSeconds> stopWatch;
@@ -91,7 +109,6 @@ int main(int argc, char* argv[])
     catch (const std::logic_error& e)
     {
         std::cerr << "A logic exception occurred: " << e.what() << std::endl;
-        std::cerr << "The file does not appear to be a ZIP archive!" << std::endl;
         return EIO;
     }
     catch (const std::exception& e)
