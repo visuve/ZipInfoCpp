@@ -8,26 +8,26 @@ namespace Zip
     {
         IO::Extract(stream, header.Version);
         IO::Extract(stream, header.Flags);
-        IO::Extract<uint16_t>(stream, reinterpret_cast<uint16_t&>(header.CompressionMethod));
+        IO::Extract(stream, reinterpret_cast<uint16_t&>(header.CompressionMethod));
         IO::Extract(stream, header.LastModifiedTime);
         IO::Extract(stream, header.LastModifiedDate);
         IO::Extract(stream, header.Crc32);
         IO::Extract(stream, header.CompressedSize);
         IO::Extract(stream, header.UncompressedSize);
+
         const uint16_t fileNameLength = IO::Extract<uint16_t>(stream);
         const uint16_t extraFieldLength = IO::Extract<uint16_t>(stream);
 
         if (fileNameLength)
         {
             header.FileName.resize(fileNameLength);
-            stream.read(&header.FileName.front(), fileNameLength);
+            stream.read(header.FileName.data(), fileNameLength);
         }
 
         if (extraFieldLength)
         {
             header.ExtraField.resize(extraFieldLength);
-            auto extrafieldFront = reinterpret_cast<char*>(&header.ExtraField.front());
-            stream.read(extrafieldFront, extraFieldLength);
+            stream.read(reinterpret_cast<char*>(header.ExtraField.data()), extraFieldLength);
         }
 
         return stream;
@@ -55,20 +55,19 @@ namespace Zip
         if (fileNameLength)
         {
             header.FileName.resize(fileNameLength);
-            stream.read(&header.FileName.front(), fileNameLength);
+            stream.read(header.FileName.data(), fileNameLength);
         }
 
         if (extraFieldLength)
         {
             header.ExtraField.resize(extraFieldLength);
-            auto extrafieldFront = reinterpret_cast<char*>(&header.ExtraField.front());
-            stream.read(extrafieldFront, extraFieldLength);
+            stream.read(reinterpret_cast<char*>(header.ExtraField.data()), extraFieldLength);
         }
 
         if (commentLength)
         {
             header.Comment.resize(commentLength);
-            stream.read(&header.Comment.front(), commentLength);
+            stream.read(header.Comment.data(), commentLength);
         }
 
         return stream;
@@ -88,7 +87,7 @@ namespace Zip
         if (commentLength)
         {
             record.Comment.resize(commentLength);
-            stream.read(&record.Comment.front(), commentLength);
+            stream.read(record.Comment.data(), commentLength);
         }
 
         return stream;
